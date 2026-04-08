@@ -5,7 +5,7 @@
 import { useState } from "react";
 import { Button, Card, Badge } from "react-bootstrap";
 import { Star, StarFill } from "react-bootstrap-icons";
-import MyModal from "../../ui/MyModal";
+import MyModal from "../../ui/modal/MyModal";
 
 const BookItem = ({
   id,

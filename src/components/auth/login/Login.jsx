@@ -1,8 +1,8 @@
-import { useState } from "react";
-import { useRef } from "react";
+import { useState, useRef } from "react";
+import { useNavigate } from "react-router";
 import { Button, Card, Col, Form, FormGroup, Row } from "react-bootstrap";
 
-const Login = () => {
+const Login = ({ onLogin }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [menssage, setMenssage] = useState(false);
@@ -12,6 +12,8 @@ const Login = () => {
     password: false,
   })
 
+  const navigate = useNavigate()
+  
   const emailRef = useRef(null)
   const passwordRef = useRef(null)
 
@@ -44,9 +46,11 @@ const Login = () => {
       return
     }
 
-    setErrors({ email: false, password: false })
-    setMenssage(false)
-    alert(`El email ingresado es: ${email} y el password es ${password}`)
+    setErrors({ email: false, password: false });
+    setMenssage(false);
+    alert(`El email ingresado es: ${email} y el password es ${password}`);
+    onLogin();
+    navigate("/library");
   }
 
   return (
