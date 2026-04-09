@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Button } from 'react-bootstrap';
+import { Route, Routes, useNavigate } from 'react-router';
 
 import NewBook from '../library/newBook/NewBook';
 import Books from '../library/books/Books';
@@ -59,6 +60,7 @@ const Dashboard = ({ onLogout }) => {
   ];
 
   const [bookList, setBookList] = useState(books);
+  const navigate = useNavigate();
 
   const handleBookAdded = (enteredBook) => {
     const bookData = {
@@ -79,15 +81,24 @@ const Dashboard = ({ onLogout }) => {
     onLogout();
   };
 
+  const handleNavigateAddBook = () => {
+    navigate("/library/add-book", { replace: true })
+  };
+
   return (
     <div className="d-flex flex-column align-items-center">
-      <div className="w-100 d-flex justify-content-end p-3">
+      <div className="w-100 d-flex justify-content-end gap-3 p-3">
+        <Button onClick={handleClickLogout} className='bg-success border-success'>Agregar libro</Button>
         <Button onClick={handleClickLogout}>Cerrar sesión</Button>
       </div>
       <h2>Book Champions</h2>
       <p>Quiero leer libros!</p>
-      <NewBook onBookAdded={handleBookAdded} />
-      <Books books={bookList} onBookDeleted={handleBookDelete} />
+      <Routes>
+        <Route index element={<Books books={bookList} onBookDeleted={handleBookDelete} />} />
+        <Route path='/add-book' element={<NewBook onBookAdded={handleNavigateAddBook} />} />
+      </Routes>
+
+
     </div>
   );
 }
