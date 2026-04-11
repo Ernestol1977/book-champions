@@ -1,7 +1,10 @@
-import { Button, Card, Col, Form, Row } from "react-bootstrap";
 import { useState } from "react";
+import { useNavigate } from "react-router";
+import { Button, Card, Col, Form, Row } from "react-bootstrap";
 
 const NewBook = ({ onBookAdded }) => {
+
+  const navigate = useNavigate();
 
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
@@ -49,10 +52,11 @@ const NewBook = ({ onBookAdded }) => {
     setPageCount('');
     setImageUrl('');
     setAvailable(false);
+    navigate("/library")
   }
 
   return (
-    <Card className="m-4 w-50" bg="success">
+    <Card className="m-4 w-100" bg="success">
       <Card.Body>
         <Form className="text-white" onSubmit={handleAddBook}>
           <Row>
@@ -112,9 +116,15 @@ const NewBook = ({ onBookAdded }) => {
                 onChange={handleChangeAvailable}
                 checked={available}
               />
-              <Button variant="primary" type="submit">
-                Agregar libro
-              </Button>
+              <div className="d-flex gap-3">
+
+                <Button variant="secondary" onClick={() => navigate("/library")}>
+                  Volver
+                </Button>
+                <Button variant="primary" type="submit">
+                  Agregar libro
+                </Button>
+              </div>
             </Col>
           </Row>
         </Form>

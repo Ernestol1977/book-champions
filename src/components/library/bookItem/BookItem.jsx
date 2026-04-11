@@ -6,6 +6,7 @@ import { useState } from "react";
 import { Button, Card, Badge } from "react-bootstrap";
 import { Star, StarFill } from "react-bootstrap-icons";
 import MyModal from "../../ui/modal/MyModal";
+import { useNavigate } from "react-router";
 
 const BookItem = ({
   id,
@@ -13,6 +14,7 @@ const BookItem = ({
   author,
   rating,
   pageCount,
+  summary,
   imageUrl,
   available,
   onSelectBook,
@@ -22,11 +24,25 @@ const BookItem = ({
   const [newTitle, setNewTitle] = useState(title);
   const [showModal, setShowModal] = useState(false);
 
+  const navigate = useNavigate();
 
   const handleClick = () => {
+    navigate(`${id}`, {
+      state: {
+        book: {
+          title,
+          author,
+          rating,
+          pageCount,
+          summary,
+          imageUrl,
+          available
+        }
+      }
+    })
     // setNewTitle(newTitle);
-    console.log(newTitle);
-    onSelectBook(newTitle);
+    // console.log(newTitle);
+    // onSelectBook(newTitle);
   }
 
   const handleConfirmDelete = () => {
@@ -43,7 +59,7 @@ const BookItem = ({
           src={
             imageUrl !== ""
               ? imageUrl
-              : "https://media.istockphoto.com/id/639812420/es/vector/lanzamiento-exitoso-de-startup.webp?s=2048x2048&w=is&k=20&c=H5k96r1wS-jmyge-ts8fsf_hxgnnCdKy0Dj44OP0EIA="
+              : "https://www.keytostudy.com/wp-content/uploads/2020/03/Books_HD_8314929977-1200x799-1-1024x682.jpg"
           }
         />
 
