@@ -46,6 +46,7 @@ const NewBook = ({ onBookAdded }) => {
 
     console.log(bookData);
     onBookAdded(bookData);
+    
     setTitle('');
     setAuthor('');
     setRating('');

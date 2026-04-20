@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from 'react-bootstrap';
 import { Outlet, Route, Routes, useNavigate } from 'react-router';
 
@@ -64,12 +64,34 @@ const Dashboard = ({ onLogout }) => {
   const navigate = useNavigate();
 
   const handleBookAdded = (enteredBook) => {
-    const bookData = {
+    fetch("http://localhost:3000/books", {
+      headers: {
+        "Content-type": "application/json"
+      },
+      method: "POST",
+      body: JSON.stringify(enteredBook)
+    })
+      .then((res) => {
+        if (!res.ok) {
+          return res.json()
+            .then((err) => {
+	      throw new Error(err.message || "Error al crear libro");
+            });
+        }
+        return res.json();
+      })
+
+      .then(data => {
+        setBookList(prevBookList => [data, ...prevBookList])
+      })
+      .catch(err => console.log(err))
+
+    /* const bookData = {
       ...enteredBook,
       id: Math.random()
     }
 
-    setBookList(prevBookList => [bookData, ...prevBookList]);
+    setBookList(prevBookList => [bookData, ...prevBookList]); */
   }
 
   const handleBookDelete = (bookId) => {
@@ -86,11 +108,18 @@ const Dashboard = ({ onLogout }) => {
     navigate("/library/add-book", { replace: true })
   };
 
+  useEffect(() => {
+    fetch("http://localhost:3000/books")
+      .then(res => res.json())
+      .then(data => setBookList([...data]))
+      .catch(err => console.log(err))
+  }, []);
+
   return (
     <div className="d-flex flex-column align-items-center">
       <div className="w-100 d-flex justify-content-end gap-3 p-3">
         <Button onClick={handleNavigateAddBook} className='bg-success border-success'>Agregar libro</Button>
-        
+
         <Button onClick={handleClickLogout}>Cerrar sesión</Button>
       </div>
 
