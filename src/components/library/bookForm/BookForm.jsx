@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import { Button, Card, Col, Form, Row } from "react-bootstrap";
+import { Textarea } from "react-bootstrap-icons";
 
 const NewBook = ({ onBookAdded }) => {
 
@@ -11,6 +12,7 @@ const NewBook = ({ onBookAdded }) => {
   const [rating, setRating] = useState("");
   const [pageCount, setPageCount] = useState("");
   const [imageUrl, setImageUrl] = useState("");
+  const [summary, setSummary] = useState("");
   const [available, setAvailable] = useState(false);
 
   const handleChangeTitle = (event) => {
@@ -28,6 +30,9 @@ const NewBook = ({ onBookAdded }) => {
   const handleChangeImageUrl = (event) => {
     setImageUrl(event.target.value)
   }
+  const handleChangeSummary = (e) => {
+    setSummary(e.target.value)
+  }
   const handleChangeAvailable = (event) => {
     setAvailable(event.target.checked)
   }
@@ -41,6 +46,7 @@ const NewBook = ({ onBookAdded }) => {
       rating: parseInt(rating, 10),
       pageCount: parseInt(pageCount, 10),
       imageUrl,
+      summary,
       available
     };
 
@@ -52,6 +58,7 @@ const NewBook = ({ onBookAdded }) => {
     setRating('');
     setPageCount('');
     setImageUrl('');
+    setSummary('');
     setAvailable(false);
     navigate("/library")
   }
@@ -100,6 +107,12 @@ const NewBook = ({ onBookAdded }) => {
                 />
               </Form.Group>
             </Col>
+          </Row>
+          <Row className="justify-content-between">
+            <Form.Group className="mb-3" controlId="summary">
+              <Form.Label>Sinópsis</Form.Label>
+              <Form.Control type="text" placeholder="Ingresar sinópsis" onChange={handleChangeSummary} value={summary} maxLength={200}/>
+            </Form.Group>
           </Row>
           <Row className="justify-content-between">
             <Form.Group className="mb-3" controlId="imageUrl">

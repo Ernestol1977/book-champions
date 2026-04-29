@@ -1,12 +1,9 @@
-// import Button from 'react-bootstrap/Button';
-// import Card from 'react-bootstrap/Card';
-// import Badge from 'react-bootstrap/Badge';
-
 import { useState } from "react";
 import { Button, Card, Badge } from "react-bootstrap";
 import { Star, StarFill } from "react-bootstrap-icons";
 import MyModal from "../../ui/modal/MyModal";
 import { useNavigate } from "react-router";
+import { successToast, errorToast } from "../../ui/notifications";
 
 const BookItem = ({
   id,
@@ -47,14 +44,25 @@ const BookItem = ({
 
   const handleConfirmDelete = () => {
     setShowModal(false);
-    onBookDeleted(id);
+
+    fetch(`http://localhost:3000/books/${id}`, {
+      method: "DELETE"
+    })
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error("Error en el Servidor")
+        }
+
+        onBookDeleted(id);
+        successToast(`Libro con el id ${id} eliminado correctamente`);
+      })
+      .catch((err) => errorToast(err));
   }
 
   return (
     <>
       <Card style={{ width: "22rem" }} className="mx-3 mt-3">
         <Card.Img
-          height={450}
           variant="top"
           src={
             imageUrl !== ""

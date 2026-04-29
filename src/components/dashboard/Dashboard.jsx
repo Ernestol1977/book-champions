@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
 import { Button } from 'react-bootstrap';
 import { Outlet, Route, Routes, useNavigate } from 'react-router';
+import { Bounce, ToastContainer, toast } from 'react-toastify';
 
-import NewBook from '../library/newBook/NewBook';
+import NewBook from '../library/bookForm/BookForm';
 import Books from '../library/books/Books';
 import BookDetails from '../library/bookDetails/BookDetails';
+import { successToast, errorToast } from '../ui/notifications';
 
 const Dashboard = ({ onLogout }) => {
 
@@ -53,7 +55,6 @@ const Dashboard = ({ onLogout }) => {
       pageCount: 230,
       imageUrl:
         "https://images.cdn1.buscalibre.com/fit-in/360x360/b0/39/b039af065268818b7bd3b0e016f8db65.jpg",
-      // "",
       available: true,
       summary:
         "En un mundo gobernado por un régimen totalitario, un hombre lucha contra la vigilancia constante y la manipulación de la verdad.",
@@ -64,6 +65,8 @@ const Dashboard = ({ onLogout }) => {
   const navigate = useNavigate();
 
   const handleBookAdded = (enteredBook) => {
+
+
     fetch("http://localhost:3000/books", {
       headers: {
         "Content-type": "application/json"
@@ -72,19 +75,20 @@ const Dashboard = ({ onLogout }) => {
       body: JSON.stringify(enteredBook)
     })
       .then((res) => {
+
         if (!res.ok) {
           return res.json()
             .then((err) => {
-	      throw new Error(err.message || "Error al crear libro");
+              throw new Error(err.message || "Error al crear libro");
             });
         }
         return res.json();
       })
-
       .then(data => {
         setBookList(prevBookList => [data, ...prevBookList])
+        successToast(`Libro ${data.title} agregado correctamente.`)
       })
-      .catch(err => console.log(err))
+      .catch(err => errorToast(err.message))
 
     /* const bookData = {
       ...enteredBook,
@@ -114,6 +118,8 @@ const Dashboard = ({ onLogout }) => {
       .then(data => setBookList([...data]))
       .catch(err => console.log(err))
   }, []);
+
+
 
   return (
     <div className="d-flex flex-column align-items-center">

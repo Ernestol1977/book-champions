@@ -1,11 +1,17 @@
+import "./bookDetails.css";
+
 import { useLocation, useNavigate } from "react-router";
 
-import { Badge, Button, Card } from "react-bootstrap";
+import { Badge, Button, Card, Row } from "react-bootstrap";
 import { Star, StarFill } from "react-bootstrap-icons";
+import { useState } from "react";
 
 const BookDetails = () => {
   const location = useLocation();
   const navigate = useNavigate();
+
+  const [showBookForm, setShowBookForm] = useState(false);
+  
 
   const { title, author, pageCount, summary, imageUrl, rating, available } = location.state.book;
 
@@ -17,10 +23,16 @@ const BookDetails = () => {
     index < rating ? <StarFill key={index} /> : <Star key={index} />
   );
 
+
+  const handleShowBookForm = () => {
+    setShowBookForm(!showBookForm);
+  }
+
   return (
-    <Card className="my-3 w-25">
+    <Card className="my-3 modify-width">
       <Card.Img
-        height={500}
+        className="modify-img"
+        height={400}
         variant="top"
         src={imageUrl !== "" ? imageUrl : "https://bit.ly/47NylZk"}
       />
@@ -39,9 +51,14 @@ const BookDetails = () => {
         <p className="my-3">
           <b>Sinopsis</b>: {summary}
         </p>
-        <Button className="me-2" onClick={clickHandler}>
-          Volver a la página principal
-        </Button>
+        <Row>
+          <Button className="me-2 mb-2" variant="secondary" onClick={handleShowBookForm}>
+            {showBookForm ? "Ocultar formulario" : "Editar formulario"}
+          </Button>
+          <Button className="me-2" onClick={clickHandler}>
+            Volver a la página principal
+          </Button>
+        </Row>
       </Card.Body>
     </Card>
   );
