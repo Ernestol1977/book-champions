@@ -1,19 +1,20 @@
 import { useState } from "react";
-import { useNavigate } from "react-router";
 import { Button, Card, Col, Form, Row } from "react-bootstrap";
+import { useNavigate } from "react-router";
 import { Textarea } from "react-bootstrap-icons";
+import { successToast } from "../../ui/notifications";
 
-const NewBook = ({ onBookAdded }) => {
+const BookForm = ({ book, onBookAdded, isEditing = false, onBookSaved }) => {
 
   const navigate = useNavigate();
 
-  const [title, setTitle] = useState("");
-  const [author, setAuthor] = useState("");
-  const [rating, setRating] = useState("");
-  const [pageCount, setPageCount] = useState("");
-  const [imageUrl, setImageUrl] = useState("");
-  const [summary, setSummary] = useState("");
-  const [available, setAvailable] = useState(false);
+  const [title, setTitle] = useState(book?.title);
+  const [author, setAuthor] = useState(book?.author);
+  const [rating, setRating] = useState(book?.rating);
+  const [pageCount, setPageCount] = useState(book?.pageCount);
+  const [imageUrl, setImageUrl] = useState(book?.imageUrl);
+  const [summary, setSummary] = useState(book?.summary);
+  const [available, setAvailable] = useState(book?.available);
 
   const handleChangeTitle = (event) => {
     setTitle(event.target.value)
@@ -50,9 +51,7 @@ const NewBook = ({ onBookAdded }) => {
       available
     };
 
-    console.log(bookData);
     onBookAdded(bookData);
-    
     setTitle('');
     setAuthor('');
     setRating('');
@@ -60,24 +59,62 @@ const NewBook = ({ onBookAdded }) => {
     setImageUrl('');
     setSummary('');
     setAvailable(false);
-    navigate("/library")
   }
+
+  // metodo para editar
+  const handleSavedBook = (e) => {
+    e.preventDefault();
+
+    const bookData = {
+      title,
+      author,
+      rating: parseInt(rating, 10),
+      pageCount: parseInt(pageCount, 10),
+      imageUrl,
+      summary,
+      available
+    };
+
+    fetch(`http://localhost:3000/books/${book.id}`, {
+      headers: {
+        "Content-type": "application/json",
+      },
+      method: "PUT",
+      body: JSON.stringify(bookData),
+    })
+      .then((res) => res.json())
+      .then(() => {
+        onBookSaved(bookData);
+        successToast(`Libro ${bookData.title} editado correctamente`);
+      })
+      .catch((err) => console.log(err));
+  };
 
   return (
     <Card className="m-4 w-100" bg="success">
       <Card.Body>
-        <Form className="text-white" onSubmit={handleAddBook}>
+        <Form className="text-white" onSubmit={isEditing ? handleSavedBook : handleAddBook}>
+
           <Row>
             <Col md={6}>
               <Form.Group className="mb-3" controlId="title">
                 <Form.Label>Título</Form.Label>
-                <Form.Control type="text" placeholder="Ingresar título" onChange={handleChangeTitle} value={title} />
+                <Form.Control type="text"
+                  placeholder="Ingresar título"
+                  onChange={handleChangeTitle}
+                  value={title}
+                />
               </Form.Group>
             </Col>
             <Col md={6}>
               <Form.Group className="mb-3" controlId="author">
                 <Form.Label>Autor</Form.Label>
-                <Form.Control type="text" placeholder="Ingresar autor" onChange={handleChangeAuthor} value={author} />
+                <Form.Control
+                  type="text"
+                  placeholder="Ingresar autor"
+                  onChange={handleChangeAuthor}
+                  value={author}
+                />
               </Form.Group>
             </Col>
           </Row>
@@ -111,13 +148,24 @@ const NewBook = ({ onBookAdded }) => {
           <Row className="justify-content-between">
             <Form.Group className="mb-3" controlId="summary">
               <Form.Label>Sinópsis</Form.Label>
-              <Form.Control type="text" placeholder="Ingresar sinópsis" onChange={handleChangeSummary} value={summary} maxLength={200}/>
+              <Form.Control
+                type="text"
+                placeholder="Ingresar sinópsis"
+                onChange={handleChangeSummary}
+                value={summary}
+                maxLength={200}
+              />
             </Form.Group>
           </Row>
           <Row className="justify-content-between">
             <Form.Group className="mb-3" controlId="imageUrl">
               <Form.Label>URL de imagen</Form.Label>
-              <Form.Control type="text" placeholder="Ingresar url de imagen" onChange={handleChangeImageUrl} value={imageUrl} />
+              <Form.Control
+                type="text"
+                placeholder="Ingresar url de imagen"
+                onChange={handleChangeImageUrl}
+                value={imageUrl}
+              />
             </Form.Group>
           </Row>
           <Row className="justify-content-end">
@@ -136,7 +184,7 @@ const NewBook = ({ onBookAdded }) => {
                   Volver
                 </Button>
                 <Button variant="primary" type="submit">
-                  Agregar libro
+                  {isEditing ? "Editar lectura" : "Agregar lectura"}
                 </Button>
               </div>
             </Col>
@@ -148,4 +196,4 @@ const NewBook = ({ onBookAdded }) => {
 };
 
 
-export default NewBook;
+export default BookForm;

@@ -1,14 +1,16 @@
-import { useEffect, useState } from 'react';
 import { Button } from 'react-bootstrap';
-import { Outlet, Route, Routes, useNavigate } from 'react-router';
+import Books from '../library/books/Books';
+import BookForm from '../library/bookForm/BookForm';
+import { useEffect, useState } from 'react';
+import { Outlet, Route, Routes, useLocation, useNavigate } from 'react-router';
 import { Bounce, ToastContainer, toast } from 'react-toastify';
 
-import NewBook from '../library/bookForm/BookForm';
-import Books from '../library/books/Books';
 import BookDetails from '../library/bookDetails/BookDetails';
 import { successToast, errorToast } from '../ui/notifications';
 
 const Dashboard = ({ onLogout }) => {
+  const location = useLocation
+  const navigate = useNavigate();
 
   const books = [
     {
@@ -62,10 +64,13 @@ const Dashboard = ({ onLogout }) => {
   ];
 
   const [bookList, setBookList] = useState(books);
-  const navigate = useNavigate();
-
   const handleBookAdded = (enteredBook) => {
+    /* const bookData = {
+      ...enteredBook,
+      id: Math.random()
+    }
 
+    setBookList(prevBookList => [bookData, ...prevBookList]); */
 
     fetch("http://localhost:3000/books", {
       headers: {
@@ -86,55 +91,57 @@ const Dashboard = ({ onLogout }) => {
       })
       .then(data => {
         setBookList(prevBookList => [data, ...prevBookList])
-        successToast(`Libro ${data.title} agregado correctamente.`)
+        successToast(`Libro ${data.title} agregado correctamente.`);
       })
-      .catch(err => errorToast(err.message))
-
-    /* const bookData = {
-      ...enteredBook,
-      id: Math.random()
-    }
-
-    setBookList(prevBookList => [bookData, ...prevBookList]); */
-  }
+      .catch(err => errorToast(err.message || "Error al crear libro"));
+  };
 
   const handleBookDelete = (bookId) => {
     setBookList((prevBookList) =>
       prevBookList.filter((book) => book.id !== bookId)
-    )
-  }
+    );
+  };
 
   const handleClickLogout = () => {
     onLogout();
+    navigate("/login");
   };
 
   const handleNavigateAddBook = () => {
-    navigate("/library/add-book", { replace: true })
+    navigate("/library/add-book", { replace: true });
   };
 
   useEffect(() => {
-    fetch("http://localhost:3000/books")
-      .then(res => res.json())
-      .then(data => setBookList([...data]))
-      .catch(err => console.log(err))
-  }, []);
-
-
+    if (location.pathname === "/library") {
+      fetch("http://localhost:3000/books")
+        .then(res => res.json())
+        .then(data => setBookList([...data]))
+        .catch(err => console.log(err))
+    }
+  }, [location]);
 
   return (
     <div className="d-flex flex-column align-items-center">
       <div className="w-100 d-flex justify-content-end gap-3 p-3">
         <Button onClick={handleNavigateAddBook} className='bg-success border-success'>Agregar libro</Button>
 
-        <Button onClick={handleClickLogout}>Cerrar sesión</Button>
+        <Button
+
+          onClick={handleClickLogout}>Cerrar sesión</Button>
       </div>
 
       <h2>Book Champions</h2>
       <p>Quiero leer libros!</p>
 
       <Routes>
-        <Route index element={<Books books={bookList} onBookDeleted={handleBookDelete} />} />
-        <Route path='add-book' element={<NewBook onBookAdded={handleBookAdded} />} />
+        <Route
+          index
+          element={<Books books={bookList} onBookDeleted={handleBookDelete} />}
+        />
+        <Route
+          path='add-book'
+          element={<BookForm onBookAdded={handleBookAdded} />}
+        />
         <Route path=":id" element={<BookDetails />} />
       </Routes>
 

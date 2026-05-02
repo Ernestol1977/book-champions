@@ -1,4 +1,3 @@
-
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 
@@ -10,7 +9,7 @@ function MyModal({ show, onClose, onConfirm }) {
       </Modal.Header>
 
       <Modal.Body>
-        <p>¿Desea eliminar esta lectura?</p>
+        <p>¿Está seguro de eliminar esta lectura?</p>
       </Modal.Body>
 
       <Modal.Footer>

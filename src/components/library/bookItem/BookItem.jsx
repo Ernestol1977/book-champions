@@ -65,12 +65,9 @@ const BookItem = ({
         <Card.Img
           variant="top"
           src={
-            imageUrl !== ""
-              ? imageUrl
-              : "https://www.keytostudy.com/wp-content/uploads/2020/03/Books_HD_8314929977-1200x799-1-1024x682.jpg"
+            imageUrl !== "" ? imageUrl : "https://www.keytostudy.com/wp-content/uploads/2020/03/Books_HD_8314929977-1200x799-1-1024x682.jpg"
           }
         />
-
         <Card.Body>
           <div className="mb-2">
             {available ? (
@@ -79,28 +76,30 @@ const BookItem = ({
               <Badge bg="danger">Reservado</Badge>
             )}
           </div>
-
           <Card.Title>{newTitle}</Card.Title>
           <Card.Subtitle>{author}</Card.Subtitle>
-
           <div>
             {Array.from({ length: 5 }, (_, index) =>
-              index < rating ?
-                (
-                  <StarFill key={index} className="text-warning" />
-                ) : (
-                  <Star key={index} className="text-warning" />
-                )
+              index < rating ? (
+                <StarFill key={index} className="text-warning" />
+              ) : (
+                <Star key={index} className="text-warning" />
+              )
             )}
           </div>
 
           <p>{pageCount} páginas</p>
 
           <div className="d-flex justify-content-around">
-            <Button className="bg-warning border-warning text-dark" onClick={() => setShowModal(true)}>
+            <Button
+              className="bg-warning border-warning text-dark"
+              onClick={() => setShowModal(true)}
+            >
               Eliminar Libro
             </Button>
-            <Button onClick={handleClick}>
+            <Button
+              onClick={handleClick}
+            >
               Seleccionar Libro
             </Button>
           </div>
